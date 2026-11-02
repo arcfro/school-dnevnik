@@ -2,6 +2,15 @@
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
+## Dev login
+
+`pnpm dev` создаёт `.data/`, накатывает миграции и сеет админа (идемпотентно):
+
+- email: `admin@school.local`
+- password: `admin123`
+
+Сидер: `server/db/seed.ts`.
+
 ## Setup
 
 Make sure to install dependencies:

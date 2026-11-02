@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
+  modules: ['nuxt-auth-utils'],
   devtools: { enabled: true },
   runtimeConfig: {
     sessionPassword: process.env.NUXT_SESSION_PASSWORD || '',

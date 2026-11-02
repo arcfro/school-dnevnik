@@ -1,4 +1,12 @@
 <script setup lang="ts">
-// Redirect placeholder — role-based routing in a later task
-await navigateTo('/login', { redirectCode: 302 })
+const { loggedIn, user } = useUserSession()
+const homes = {
+  admin: '/admin',
+  teacher: '/teacher',
+  parent: '/parent',
+} as const
+await navigateTo(
+  loggedIn.value && user.value ? homes[user.value.role] : '/login',
+  { redirectCode: 302 },
+)
 </script>
