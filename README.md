@@ -2,6 +2,32 @@
 
 Школьный электронный дневник на Nuxt 4.
 
+## Migrate dev → prod
+
+Локально по умолчанию SQLite: `DATABASE_URL=file:./.data/dev.sqlite` (или без переменной). Миграции в `server/db/migrations`, на старте `pnpm dev` накатывает их в `.data/`.
+
+Прод и Docker — PostgreSQL. `useDb()` смотрит на `DATABASE_URL`: если строка начинается с `postgresql://` или `postgres://`, подключается `postgres` (postgres.js) и миграции из `server/db/migrations-pg`.
+
+```bash
+# только Postgres
+docker compose up --build
+
+# приложение: http://localhost:3000
+# БД с хоста: postgresql://dnevnik:dnevnik@localhost:5432/dnevnik
+```
+
+Пустую prod-БД накатывают миграции при старте приложения (тот же механизм, что в dev). Данные из `.data/dev.sqlite` в Postgres автоматически не переносятся — нужен отдельный экспорт/импорт или ручной перенос.
+
+Для `drizzle-kit` под Postgres:
+
+```bash
+DRIZZLE_DIALECT=postgresql DATABASE_URL=postgresql://dnevnik:dnevnik@localhost:5432/dnevnik pnpm exec drizzle-kit generate
+```
+
+Схема пока в `sqliteTable`; PG-миграции ведут параллельно в `migrations-pg`. После смены схемы обновляй обе папки или генерируй PG-миграции этой командой.
+
+Переменные для compose: минимум `NUXT_SESSION_PASSWORD` (≥32 символа), см. `.env.example`.
+
 ## Dev login
 
 `pnpm dev` создаёт `.data/`, накатывает миграции и сеет админа (идемпотентно):

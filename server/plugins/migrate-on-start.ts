@@ -1,15 +1,25 @@
 import { mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+import { migrate as migrateSqlite } from 'drizzle-orm/better-sqlite3/migrator'
+import { migrate as migratePostgres } from 'drizzle-orm/postgres-js/migrator'
 import { seedDevAdmin } from '../db/seed'
-import { useDb } from '../utils/db'
+import { getMigrationsFolder, isPostgresDatabase, useDb } from '../utils/db'
 
 export default defineNitroPlugin(async () => {
-  mkdirSync(resolve(process.cwd(), '.data'), { recursive: true })
-  migrate(useDb(), {
-    migrationsFolder: resolve(process.cwd(), 'server/db/migrations'),
-  })
-  if (import.meta.dev) {
+  if (!isPostgresDatabase()) {
+    mkdirSync(resolve(process.cwd(), '.data'), { recursive: true })
+  }
+
+  const db = useDb()
+  const migrationsFolder = resolve(process.cwd(), getMigrationsFolder())
+
+  if (isPostgresDatabase()) {
+    await migratePostgres(db, { migrationsFolder })
+  } else {
+    migrateSqlite(db, { migrationsFolder })
+  }
+
+  if (import.meta.dev && !isPostgresDatabase()) {
     await seedDevAdmin()
   }
 })
