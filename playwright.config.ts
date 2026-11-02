@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test'
+import { PORTFOLIO_VIEWPORT } from './e2e/portfolio-media'
 
 const baseURL = process.env.BASE_URL ?? 'http://127.0.0.1:3000'
 const devHost = process.env.PLAYWRIGHT_DEV_HOST ?? '127.0.0.1'
@@ -27,11 +28,11 @@ export default defineConfig({
   use: {
     baseURL,
     ...devices['Desktop Chrome'],
-    viewport: { width: 1280, height: 720 },
+    viewport: { ...PORTFOLIO_VIEWPORT },
     deviceScaleFactor: 1,
     video: {
       mode: 'on',
-      size: { width: 1280, height: 720 },
+      size: { ...PORTFOLIO_VIEWPORT },
     },
     launchOptions: {
       slowMo: 0,

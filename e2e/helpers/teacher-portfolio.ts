@@ -55,6 +55,8 @@ export async function loginAsTeacher(page: Page) {
 export async function shot(page: Page, fileName: string) {
   await page.screenshot({
     path: `${PORTFOLIO_SHOTS_DIR}/${fileName}`,
+    type: 'png',
     animations: 'disabled',
+    fullPage: false,
   })
 }

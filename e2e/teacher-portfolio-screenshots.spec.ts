@@ -26,10 +26,9 @@ test('portfolio: 7 скриншотов учителя', async ({ page }) => {
   await page.locator('[data-tour="teacher-schedule"]').scrollIntoViewIfNeeded()
   await shot(page, '02-schedule.png')
 
-  await page.locator('.schedule-grid').screenshot({
-    path: `${PORTFOLIO_SHOTS_DIR}/03-schedule-grid.png`,
-    animations: 'disabled',
-  })
+  await page.mouse.wheel(0, 220)
+  await expect(page.locator('.schedule-grid').first()).toBeVisible()
+  await shot(page, '03-schedule-focus.png')
 
   await page.goto('/teacher/journal')
   await expect(page.getByRole('heading', { name: 'Журнал' })).toBeVisible()
@@ -45,8 +44,7 @@ test('portfolio: 7 скриншотов учителя', async ({ page }) => {
 
   await page.goto('/teacher/homework')
   await expect(page.getByRole('heading', { name: 'Задания' })).toBeVisible()
-  await page.getByRole('heading', { name: 'Задания' }).waitFor()
-  await expect(page.locator('.page-card').first()).toBeVisible()
+  await expect(page.locator('.data-table tbody tr').first()).toBeVisible({ timeout: 10_000 })
   await shot(page, '05-homework-list.png')
 
   await page.goto('/teacher/homework/new')

@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare",
     "test": "vitest run",
     "record:portfolio": "playwright test e2e/teacher-portfolio.spec.ts && node scripts/copy-portfolio-video.mjs",
-    "screenshots:portfolio": "playwright test e2e/teacher-portfolio-screenshots.spec.ts",
+    "screenshots:portfolio": "playwright test e2e/teacher-portfolio-screenshots.spec.ts && node scripts/validate-portfolio-screenshots.mjs",
     "icons": "python3 scripts/generate-pwa-icons.py"
   },
   "dependencies": {
