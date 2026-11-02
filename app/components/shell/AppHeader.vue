@@ -284,6 +284,10 @@ async function onLogout() {
 
 @media (max-width: 48rem) {
   .app-header {
+    --app-header-bar-height: calc(
+      max(var(--space-md), env(safe-area-inset-top, 0px)) + var(--touch-min) + var(--space-md)
+    );
+    z-index: 10002;
     flex-wrap: nowrap;
     gap: var(--space-md);
   }
@@ -296,7 +300,10 @@ async function onLogout() {
   .nav-backdrop {
     display: block;
     position: fixed;
-    inset: 0;
+    top: var(--app-header-bar-height);
+    right: 0;
+    bottom: 0;
+    left: 0;
     z-index: 10000;
     border: 0;
     padding: 0;
@@ -307,7 +314,7 @@ async function onLogout() {
 
   .nav {
     position: fixed;
-    top: 0;
+    top: var(--app-header-bar-height);
     left: 0;
     bottom: 0;
     z-index: 10001;
@@ -317,8 +324,7 @@ async function onLogout() {
     align-items: stretch;
     width: min(18rem, 88vw);
     margin: 0;
-    padding: calc(var(--touch-min) + var(--space-md) + env(safe-area-inset-top, 0px)) var(--space-lg)
-      max(var(--space-xl), env(safe-area-inset-bottom, 0px));
+    padding: var(--space-lg) var(--space-lg) max(var(--space-xl), env(safe-area-inset-bottom, 0px));
     gap: var(--space-xs);
     overflow-y: auto;
     background: var(--color-card);
