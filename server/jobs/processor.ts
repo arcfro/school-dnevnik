@@ -2,9 +2,18 @@ import { and, eq, lte } from 'drizzle-orm'
 import { jobs, users } from '../db/schema'
 import { createBitrixClient } from '../integrations/bitrix/client'
 import type { BitrixClient } from '../integrations/bitrix/client'
+import {
+  buildPushPayload,
+  deletePushSubscriptionByEndpoint,
+  isPushGoneError,
+  listPushSubscriptions,
+  loadNotificationPayload,
+  type PushSender,
+} from '../services/push.service'
 import { useDb } from '../utils/db'
 import { ForbiddenError } from '../utils/rbac'
 import type { JobType } from './types'
+import { createWebPushSender } from './web-push'
 
 export function assertJobSecret(provided: string | undefined, expected: string) {
   if (!expected || provided !== expected) {
@@ -19,7 +28,12 @@ function asRecord(payload: unknown): Record<string, unknown> {
   throw new Error('Некорректный payload')
 }
 
-async function dispatchJob(type: JobType, payload: Record<string, unknown>, bitrix: BitrixClient) {
+async function dispatchJob(
+  type: JobType,
+  payload: Record<string, unknown>,
+  bitrix: BitrixClient,
+  sendPush: PushSender,
+) {
   switch (type) {
     case 'B24_UPSERT_PARENT': {
       const userId = String(payload.userId ?? '')
@@ -52,8 +66,33 @@ async function dispatchJob(type: JobType, payload: Record<string, unknown>, bitr
     case 'B24_CREATE_TASK':
       await bitrix.createTask(payload)
       return
-    case 'SEND_PUSH':
+    case 'SEND_PUSH': {
+      const userId = String(payload.userId ?? '')
+      if (!userId) throw new Error('Пользователь не найден')
+      const notificationId = String(payload.notificationId ?? '')
+      const notification = await loadNotificationPayload(notificationId)
+      const pushPayload = buildPushPayload(notification.type, notification.payload)
+      const subscriptions = await listPushSubscriptions(userId)
+      for (const subscription of subscriptions) {
+        try {
+          await sendPush.send(
+            {
+              endpoint: subscription.endpoint,
+              p256dh: subscription.p256dh,
+              auth: subscription.auth,
+            },
+            pushPayload,
+          )
+        } catch (e) {
+          if (isPushGoneError(e)) {
+            await deletePushSubscriptionByEndpoint(subscription.endpoint)
+            continue
+          }
+          throw e
+        }
+      }
       return
+    }
     default:
       throw new Error(`Неизвестный тип задачи: ${type}`)
   }
@@ -64,6 +103,7 @@ export async function processPendingJobs(
     now?: Date
     bitrixMode?: string
     limit?: number
+    sendPush?: PushSender
   } = {},
 ) {
   const db = useDb()
@@ -76,6 +116,7 @@ export async function processPendingJobs(
     .limit(options.limit ?? 50)
 
   const bitrix = createBitrixClient(options.bitrixMode ?? process.env.BITRIX_MODE ?? 'stub')
+  const sendPush = options.sendPush ?? createWebPushSender()
   const result = { processed: 0, failed: 0, done: [] as string[] }
 
   for (const job of pending) {
@@ -89,7 +130,7 @@ export async function processPendingJobs(
       .where(eq(jobs.id, job.id))
 
     try {
-      await dispatchJob(job.type as JobType, asRecord(job.payload), bitrix)
+      await dispatchJob(job.type as JobType, asRecord(job.payload), bitrix, sendPush)
       await db
         .update(jobs)
         .set({

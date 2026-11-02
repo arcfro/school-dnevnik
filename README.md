@@ -11,6 +11,20 @@ Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduct
 
 Сидер: `server/db/seed.ts`.
 
+## Web Push
+
+Сгенерировать VAPID-ключи и записать в `.env`:
+
+```bash
+npx web-push generate-vapid-keys
+```
+
+`VAPID_PUBLIC_KEY` и `VAPID_PRIVATE_KEY` — пара из команды. `VAPID_SUBJECT` — `mailto:` школы.
+
+Родитель включает подписку на `/parent/settings`. `SEND_PUSH` в очереди шлёт `{ title, body, url }` на сохранённые endpoint'ы.
+
+В проде нужен HTTPS. На iPhone push только после установки PWA на домашний экран.
+
 ## Setup
 
 Make sure to install dependencies:

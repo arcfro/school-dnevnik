@@ -118,15 +118,106 @@ describe('job processor', () => {
     expect(rows[0]?.lastError).toMatch(/не найден/i)
   })
 
-  it('marks SEND_PUSH done without sending in v1', async () => {
+  it('marks SEND_PUSH done without sending when there is no subscription', async () => {
     const { processPendingJobs } = await import('../../server/jobs/processor')
     const { useDb } = await import('../../server/utils/db')
+    const sent: unknown[] = []
     await enqueueJob('SEND_PUSH', { userId: 'u1', notificationId: 'n1' })
 
-    const result = await processPendingJobs()
+    const result = await processPendingJobs({
+      sendPush: {
+        async send(subscription, payload) {
+          sent.push({ subscription, payload })
+        },
+      },
+    })
     expect(result.processed).toBe(1)
+    expect(sent).toHaveLength(0)
     const rows = await useDb().select().from(jobs)
     expect(rows[0]?.status).toBe('done')
+  })
+
+  it('sends { title, body, url } to stored subscriptions', async () => {
+    const { processPendingJobs } = await import('../../server/jobs/processor')
+    const { useDb } = await import('../../server/utils/db')
+    const { createNotification } = await import('../../server/services/notifications.service')
+    const { savePushSubscription } = await import('../../server/services/push.service')
+
+    const parent = await adminCreateUser(
+      admin,
+      { email: 'p@school.local', password: 'secret1', name: 'Родитель', role: 'parent' },
+      { bitrixEnabled: false },
+    )
+    await savePushSubscription(parent, {
+      endpoint: 'https://push.example/endpoint-1',
+      keys: { p256dh: 'p256dh-key', auth: 'auth-key' },
+    })
+    const notification = await createNotification(parent.id, 'grade', {
+      studentName: 'Иванов Иван',
+      subjectName: 'Математика',
+      value: '5',
+    })
+    await enqueueJob('SEND_PUSH', { userId: parent.id, notificationId: notification.id })
+
+    const sent: Array<{ subscription: unknown; payload: unknown }> = []
+    const result = await processPendingJobs({
+      sendPush: {
+        async send(subscription, payload) {
+          sent.push({ subscription, payload })
+        },
+      },
+    })
+
+    expect(result.processed).toBe(1)
+    expect(sent).toEqual([
+      {
+        subscription: {
+          endpoint: 'https://push.example/endpoint-1',
+          p256dh: 'p256dh-key',
+          auth: 'auth-key',
+        },
+        payload: {
+          title: 'Новая оценка',
+          body: 'Иванов Иван — Математика: 5',
+          url: '/parent/grades',
+        },
+      },
+    ])
+    const rows = await useDb().select().from(jobs)
+    expect(rows[0]?.status).toBe('done')
+  })
+
+  it('drops expired subscriptions on 410 and still marks the job done', async () => {
+    const { processPendingJobs } = await import('../../server/jobs/processor')
+    const { useDb } = await import('../../server/utils/db')
+    const { savePushSubscription } = await import('../../server/services/push.service')
+    const { pushSubscriptions } = await import('../../server/db/schema')
+
+    const parent = await adminCreateUser(
+      admin,
+      { email: 'p@school.local', password: 'secret1', name: 'Родитель', role: 'parent' },
+      { bitrixEnabled: false },
+    )
+    await savePushSubscription(parent, {
+      endpoint: 'https://push.example/gone',
+      keys: { p256dh: 'p256dh-key', auth: 'auth-key' },
+    })
+    await enqueueJob('SEND_PUSH', { userId: parent.id, notificationId: 'n1' })
+
+    const gone = Object.assign(new Error('Gone'), { statusCode: 410 })
+    const result = await processPendingJobs({
+      sendPush: {
+        async send() {
+          throw gone
+        },
+      },
+    })
+
+    expect(result).toMatchObject({ processed: 1, failed: 0 })
+    const rows = await useDb().select().from(jobs)
+    expect(rows[0]?.status).toBe('done')
+    const subs = await useDb().select().from(pushSubscriptions)
+    expect(subs).toHaveLength(0)
   })
 
   it('rejects missing or wrong X-Job-Secret', async () => {
