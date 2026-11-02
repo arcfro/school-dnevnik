@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm'
 import { users } from '../db/schema'
 import { useDb } from '../utils/db'
 import { hashPassword, verifyPassword } from '../utils/password'
+import { assertRole } from '../utils/rbac'
 
 export type SessionUser = {
   id: string
@@ -66,4 +67,18 @@ export async function createUser(input: {
   const created = rows[0]
   if (!created) throw new Error('Failed to create user')
   return toSessionUser(created)
+}
+
+export async function listTeachers(user: SessionUser) {
+  assertRole(user, 'admin')
+  const db = useDb()
+  return db
+    .select({
+      id: users.id,
+      email: users.email,
+      name: users.name,
+    })
+    .from(users)
+    .where(eq(users.role, 'teacher'))
+    .orderBy(users.name)
 }
