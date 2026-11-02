@@ -1,6 +1,6 @@
-# Nuxt Minimal Starter
+# Дневник
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Школьный электронный дневник на Nuxt 4.
 
 ## Dev login
 
@@ -24,6 +24,19 @@ npx web-push generate-vapid-keys
 Родитель включает подписку на `/parent/settings`. `SEND_PUSH` в очереди шлёт `{ title, body, url }` на сохранённые endpoint'ы.
 
 В проде нужен HTTPS. На iPhone push только после установки PWA на домашний экран.
+
+## PWA
+
+Модуль `@vite-pwa/nuxt`: manifest «Дневник», `display: standalone`, иконки `public/icon-192.png` и `public/icon-512.png`, Workbox SW (`sw.js`, `registerType: autoUpdate`).
+
+Установка на телефон:
+
+- Android Chrome: меню → «Установить приложение» / «Добавить на главный экран».
+- iPhone Safari: «Поделиться» → «На экран Домой» (push работает только так).
+
+HTTPS обязателен для установки PWA и Web Push вне `localhost`. Локально `pnpm dev` поднимает dev SW (`devOptions.enabled`); для проверки installability удобнее `pnpm build && pnpm preview` по HTTPS или через reverse proxy с TLS.
+
+Push по-прежнему через отдельный `public/push-sw.js` (Task 11); PWA SW кэширует статику приложения.
 
 ## Setup
 

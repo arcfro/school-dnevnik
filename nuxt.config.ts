@@ -1,6 +1,45 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
-  modules: ['nuxt-auth-utils'],
+  modules: ['nuxt-auth-utils', '@vite-pwa/nuxt'],
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Дневник',
+      short_name: 'Дневник',
+      description: 'Школьный электронный дневник',
+      lang: 'ru',
+      display: 'standalone',
+      start_url: '/',
+      theme_color: '#4f46e5',
+      background_color: '#eef2ff',
+      icons: [
+        {
+          src: '/icon-192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: '/icon-512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: '/icon-512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module',
+    },
+  },
   css: ['~/assets/css/main.css'],
   components: [
     { path: '~/components' },
