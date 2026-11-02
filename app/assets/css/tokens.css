@@ -1,0 +1,55 @@
+:root {
+  --color-primary: #4f46e5;
+  --color-on-primary: #ffffff;
+  --color-secondary: #818cf8;
+  --color-on-secondary: #0f172a;
+  --color-accent: #ea580c;
+  --color-on-accent: #000000;
+  --color-background: #eef2ff;
+  --color-foreground: #1e1b4b;
+  --color-surface: #eef2ff;
+  --color-card: #ffffff;
+  --color-card-foreground: #1e1b4b;
+  --color-muted: #ebeef8;
+  --color-muted-foreground: #475569;
+  --color-border: #c7d2fe;
+  --color-destructive: #dc2626;
+  --color-on-destructive: #ffffff;
+  --color-ring: #4f46e5;
+
+  --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-sans: var(--font-body);
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+
+  --space-xs: 2px;
+  --space-sm: 4px;
+  --space-md: 8px;
+  --space-lg: 12px;
+  --space-xl: 16px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius: var(--radius-md);
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px rgba(15, 23, 42, 0.1);
+  --shadow-lg: 0 10px 15px rgba(15, 23, 42, 0.1);
+
+  --icon-sm: 16px;
+  --icon-md: 24px;
+
+  --duration: 200ms;
+  --ease: ease-out;
+  --focus-ring: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring);
+  --touch-min: 44px;
+}

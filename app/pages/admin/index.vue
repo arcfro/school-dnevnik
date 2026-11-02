@@ -1,12 +1,11 @@
 <script setup lang="ts">
 definePageMeta({
+  layout: 'admin',
   middleware: ['role'],
   roles: ['admin'],
 })
 </script>
 
 <template>
-  <div>
-    <h1>Админ</h1>
-  </div>
+  <PageStub title="Админ" />
 </template>

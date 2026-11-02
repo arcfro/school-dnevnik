@@ -1,12 +1,11 @@
 <script setup lang="ts">
 definePageMeta({
+  layout: 'teacher',
   middleware: ['role'],
   roles: ['teacher'],
 })
 </script>
 
 <template>
-  <div>
-    <h1>Учитель</h1>
-  </div>
+  <PageStub title="Учитель" />
 </template>

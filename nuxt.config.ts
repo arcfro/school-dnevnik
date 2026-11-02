@@ -1,6 +1,25 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   modules: ['nuxt-auth-utils'],
+  css: ['~/assets/css/main.css'],
+  components: [
+    { path: '~/components' },
+    { path: '~/components/shell', pathPrefix: false },
+  ],
+  app: {
+    head: {
+      title: 'Дневник',
+      htmlAttrs: { lang: 'ru' },
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap',
+        },
+      ],
+    },
+  },
   devtools: { enabled: true },
   runtimeConfig: {
     sessionPassword: process.env.NUXT_SESSION_PASSWORD || '',
