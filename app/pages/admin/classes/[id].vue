@@ -157,9 +157,12 @@ async function onDeleteClass() {
             <h1>{{ klass.name }}</h1>
             <p v-if="klass.gradeLevel" class="muted">Параллель {{ klass.gradeLevel }}</p>
           </div>
-          <button class="btn btn-danger" type="button" :disabled="deleting" @click="onDeleteClass">
-            Удалить класс
-          </button>
+          <div class="inline-form">
+            <NuxtLink class="btn btn-ghost" :to="`/admin/schedule/${klass.id}`">Расписание</NuxtLink>
+            <button class="btn btn-danger" type="button" :disabled="deleting" @click="onDeleteClass">
+              Удалить класс
+            </button>
+          </div>
         </div>
       </section>
 
