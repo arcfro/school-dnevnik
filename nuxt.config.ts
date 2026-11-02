@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
-  modules: ['nuxt-auth-utils', '@vite-pwa/nuxt'],
+  modules: ['nuxt-auth-utils', '@vite-pwa/nuxt', '@nuxt/icon'],
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
@@ -50,6 +50,8 @@ export default defineNuxtConfig({
       title: 'Дневник',
       htmlAttrs: { lang: 'ru' },
       link: [
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/icon-192.png' },
+        { rel: 'apple-touch-icon', href: '/icon-192.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
         {

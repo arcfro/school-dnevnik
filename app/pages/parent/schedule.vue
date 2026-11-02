@@ -73,7 +73,12 @@ watch(error, async (err) => {
     <p v-else-if="!data?.children.length" class="muted">Нет привязанных учеников.</p>
     <template v-else>
       <p v-if="data.className" class="muted">{{ data.className }}</p>
-      <p v-if="!data.slots.length" class="muted">В сетке пока нет уроков.</p>
+      <EmptyState
+        v-if="!data.slots.length"
+        variant="schedule"
+        title="В сетке пока нет уроков"
+        description="Расписание класса ещё не заполнено."
+      />
       <div v-else class="schedule-grid-wrap">
         <table class="schedule-grid">
           <thead>
@@ -86,15 +91,18 @@ watch(error, async (err) => {
             <tr v-for="lesson in LESSON_INDEXES" :key="lesson">
               <th>{{ lesson }}</th>
               <td v-for="day in WEEKDAYS" :key="`${day.value}:${lesson}`">
-                <div v-if="slotAt(day.value, lesson)" class="schedule-slot">
-                  <span class="schedule-slot-subject">{{ slotAt(day.value, lesson)!.subjectName }}</span>
-                  <span class="schedule-slot-meta">
-                    {{ slotAt(day.value, lesson)!.teacherName }}
-                    <template v-if="slotAt(day.value, lesson)!.room">
-                      · каб. {{ slotAt(day.value, lesson)!.room }}
-                    </template>
-                  </span>
-                </div>
+                <ScheduleSlotCard
+                  v-if="slotAt(day.value, lesson)"
+                  :slot="slotAt(day.value, lesson)!"
+                  :meta-line="
+                    [
+                      slotAt(day.value, lesson)!.teacherName,
+                      slotAt(day.value, lesson)!.room ? `каб. ${slotAt(day.value, lesson)!.room}` : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')
+                  "
+                />
               </td>
             </tr>
           </tbody>

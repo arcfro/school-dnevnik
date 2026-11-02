@@ -118,7 +118,7 @@ const statusText: Record<typeof status.value, string> = {
     <p class="muted">{{ statusText[status] }}</p>
     <p v-if="error" class="form-error">{{ error }}</p>
 
-    <div class="inline-form">
+    <div class="inline-form" data-tour="parent-push">
       <button
         v-if="status !== 'on'"
         class="btn btn-primary"

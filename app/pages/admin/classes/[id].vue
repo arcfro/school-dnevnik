@@ -178,7 +178,8 @@ async function onDeleteClass() {
           </button>
         </form>
         <p v-if="!studentList?.length" class="muted">Учеников пока нет.</p>
-        <table v-else class="data-table">
+        <div v-else class="table-wrap">
+        <table class="data-table">
           <thead>
             <tr>
               <th>Имя</th>
@@ -196,6 +197,7 @@ async function onDeleteClass() {
             </tr>
           </tbody>
         </table>
+        </div>
       </section>
 
       <section class="page-card stack">
@@ -228,7 +230,8 @@ async function onDeleteClass() {
           </button>
         </form>
         <p v-if="!assignments?.length" class="muted">Предметы ещё не назначены.</p>
-        <table v-else class="data-table">
+        <div v-else class="table-wrap">
+        <table class="data-table">
           <thead>
             <tr>
               <th>Предмет</th>
@@ -248,6 +251,7 @@ async function onDeleteClass() {
             </tr>
           </tbody>
         </table>
+        </div>
       </section>
     </template>
   </div>

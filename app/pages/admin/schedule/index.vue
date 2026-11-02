@@ -22,7 +22,8 @@ const { data: items, pending } = await useFetch<Klass[]>('/api/admin/classes')
     </div>
     <p v-if="pending && !items?.length" class="muted">Загрузка…</p>
     <p v-else-if="!items?.length" class="muted">Сначала создайте класс.</p>
-    <table v-else class="data-table">
+    <div v-else class="table-wrap">
+    <table class="data-table">
       <thead>
         <tr>
           <th>Класс</th>
@@ -38,5 +39,6 @@ const { data: items, pending } = await useFetch<Klass[]>('/api/admin/classes')
         </tr>
       </tbody>
     </table>
+    </div>
   </section>
 </template>

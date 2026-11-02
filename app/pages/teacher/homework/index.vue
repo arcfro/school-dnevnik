@@ -78,7 +78,11 @@ watch(
       </label>
 
       <p v-if="!classId || (pending && !data.items.length)" class="muted">Загрузка…</p>
-      <p v-else-if="!data.items.length" class="muted">Для этого класса заданий пока нет.</p>
+      <EmptyState
+        v-else-if="!data.items.length"
+        variant="homework"
+        title="Для этого класса заданий пока нет"
+      />
       <div v-else class="schedule-grid-wrap">
         <table class="data-table">
           <thead>

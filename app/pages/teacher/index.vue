@@ -16,13 +16,18 @@ function slotAt(day: number, lesson: number) {
 </script>
 
 <template>
-  <section class="page-card stack">
+  <section class="page-card stack" data-tour="teacher-schedule">
     <div class="page-head">
       <h1>Расписание</h1>
     </div>
     <p v-if="error" class="form-error">{{ apiErrorMessage(error, 'Не удалось загрузить расписание') }}</p>
     <p v-else-if="pending && !data" class="muted">Загрузка…</p>
-    <p v-else-if="!data?.slots.length" class="muted">Пока нет уроков в сетке.</p>
+    <EmptyState
+      v-else-if="!data?.slots.length"
+      variant="schedule"
+      title="Пока нет уроков в сетке"
+      description="Когда администратор заполнит расписание, уроки появятся здесь."
+    />
     <div v-else class="schedule-grid-wrap">
       <table class="schedule-grid">
         <thead>
@@ -35,15 +40,18 @@ function slotAt(day: number, lesson: number) {
           <tr v-for="lesson in LESSON_INDEXES" :key="lesson">
             <th>{{ lesson }}</th>
             <td v-for="day in WEEKDAYS" :key="`${day.value}:${lesson}`">
-              <div v-if="slotAt(day.value, lesson)" class="schedule-slot">
-                <span class="schedule-slot-subject">{{ slotAt(day.value, lesson)!.subjectName }}</span>
-                <span class="schedule-slot-meta">
-                  {{ slotAt(day.value, lesson)!.className }}
-                  <template v-if="slotAt(day.value, lesson)!.room">
-                    · каб. {{ slotAt(day.value, lesson)!.room }}
-                  </template>
-                </span>
-              </div>
+              <ScheduleSlotCard
+                v-if="slotAt(day.value, lesson)"
+                :slot="slotAt(day.value, lesson)!"
+                :meta-line="
+                  [
+                    slotAt(day.value, lesson)!.className,
+                    slotAt(day.value, lesson)!.room ? `каб. ${slotAt(day.value, lesson)!.room}` : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')
+                "
+              />
             </td>
           </tr>
         </tbody>

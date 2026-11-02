@@ -18,7 +18,8 @@ const { data: items, pending } = await useFetch<Student[]>('/api/admin/students'
     <p class="muted">Добавлять учеников нужно на странице класса.</p>
     <p v-if="pending && !items?.length" class="muted">Загрузка…</p>
     <p v-else-if="!items?.length" class="muted">Учеников пока нет.</p>
-    <table v-else class="data-table">
+    <div v-else class="table-wrap">
+    <table class="data-table">
       <thead>
         <tr>
           <th>Имя</th>
@@ -34,5 +35,6 @@ const { data: items, pending } = await useFetch<Student[]>('/api/admin/students'
         </tr>
       </tbody>
     </table>
+    </div>
   </section>
 </template>

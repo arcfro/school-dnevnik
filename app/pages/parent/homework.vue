@@ -55,6 +55,12 @@ watch(error, async (err) => {
   studentId.value = ''
   await refresh()
 })
+
+function dueChipClass(dueAt: string | null) {
+  const tone = homeworkDueTone(dueAt)
+  if (tone === 'overdue' || tone === 'today' || tone === 'soon') return `due-chip--${tone}`
+  return undefined
+}
 </script>
 
 <template>
@@ -76,13 +82,18 @@ watch(error, async (err) => {
     <p v-else-if="!data?.children.length" class="muted">Нет привязанных учеников.</p>
     <template v-else>
       <p v-if="data.className" class="muted">{{ data.className }} · активные задания</p>
-      <p v-if="!data.items.length" class="muted">Активных заданий нет.</p>
+      <EmptyState
+        v-if="!data.items.length"
+        variant="homework"
+        title="Активных заданий нет"
+        description="Когда учитель выдаст домашку, она появится в этом списке."
+      />
       <div v-else class="stack homework-list">
         <article v-for="item in data.items" :key="item.id" class="homework-card">
           <h2>{{ item.title }}</h2>
-          <p class="muted">
+          <p class="muted homework-meta">
             {{ item.subjectName }}
-            · {{ homeworkDueLabel(item.dueAt) }}
+            <span class="due-chip" :class="dueChipClass(item.dueAt)">{{ homeworkDueLabel(item.dueAt) }}</span>
             <template v-if="item.teacherName"> · {{ item.teacherName }}</template>
           </p>
           <p class="homework-body">{{ item.body }}</p>

@@ -65,7 +65,8 @@ async function onCreate() {
 
     <p v-if="pending && !items?.length" class="muted">Загрузка…</p>
     <p v-else-if="!items?.length" class="muted">Классов пока нет.</p>
-    <table v-else class="data-table">
+    <div v-else class="table-wrap">
+    <table class="data-table">
       <thead>
         <tr>
           <th>Класс</th>
@@ -83,5 +84,6 @@ async function onCreate() {
         </tr>
       </tbody>
     </table>
+    </div>
   </section>
 </template>

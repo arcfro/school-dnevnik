@@ -53,3 +53,24 @@
   --focus-ring: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring);
   --touch-min: 44px;
 }
+
+[data-role='parent'] {
+  --color-accent: #0d9488;
+  --color-on-accent: #ffffff;
+}
+
+[data-role='teacher'] {
+  --color-accent: #ea580c;
+  --color-on-accent: #000000;
+}
+
+[data-role='admin'] {
+  --color-primary: #4338ca;
+  --color-secondary: #6366f1;
+  --color-ring: #4338ca;
+  --color-border: #cbd5e1;
+}
+
+[data-role='guest'] {
+  --color-background: #f8fafc;
+}

@@ -95,7 +95,8 @@ async function onCreate() {
     <p class="muted">Детей к родителю привязывают в карточке пользователя.</p>
     <p v-if="pending && !items?.length" class="muted">Загрузка…</p>
     <p v-else-if="!items?.length" class="muted">Пользователей пока нет.</p>
-    <table v-else class="data-table">
+    <div v-else class="table-wrap">
+    <table class="data-table">
       <thead>
         <tr>
           <th>Имя</th>
@@ -113,5 +114,6 @@ async function onCreate() {
         </tr>
       </tbody>
     </table>
+    </div>
   </section>
 </template>

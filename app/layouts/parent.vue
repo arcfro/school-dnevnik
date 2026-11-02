@@ -19,10 +19,11 @@ watch(
 </script>
 
 <template>
-  <div class="shell">
+  <div class="shell" data-role="parent">
     <AppHeader :links="links" />
     <main id="main" class="shell-main" tabindex="-1">
       <slot />
     </main>
+    <AppTourHost />
   </div>
 </template>

@@ -124,7 +124,8 @@ async function onUnlink(id: string, name: string) {
           </button>
         </form>
         <p v-if="!links?.length" class="muted">Детей пока нет.</p>
-        <table v-else class="data-table">
+        <div v-else class="table-wrap">
+        <table class="data-table">
           <thead>
             <tr>
               <th>Ученик</th>
@@ -146,6 +147,7 @@ async function onUnlink(id: string, name: string) {
             </tr>
           </tbody>
         </table>
+        </div>
       </section>
     </template>
   </div>

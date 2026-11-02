@@ -124,7 +124,11 @@ watch(error, async (err) => {
         · последние 30 дней
         ({{ data.from }} — {{ data.to }})
       </p>
-      <p v-if="!rows.length" class="muted">За эти дни оценок и отметок нет.</p>
+      <EmptyState
+        v-if="!rows.length"
+        variant="grades"
+        title="За эти дни оценок и отметок нет"
+      />
       <div v-else class="schedule-grid-wrap">
         <table class="data-table">
           <thead>
@@ -140,11 +144,19 @@ watch(error, async (err) => {
               <td>{{ row.date }}</td>
               <td>{{ row.subjectName }}</td>
               <td>
-                <span v-if="row.value" class="grade-value">{{ row.value }}</span>
+                <span
+                  v-if="row.value"
+                  class="grade-pill"
+                  :class="`grade-pill--${gradeTone(row.value)}`"
+                >{{ row.value }}</span>
                 <span v-else class="muted">—</span>
                 <span v-if="row.comment" class="muted"> · {{ row.comment }}</span>
               </td>
-              <td>{{ attendanceLabel(row.status) }}</td>
+              <td>
+                <span :class="attendanceBadgeClass(row.status)">
+                  {{ attendanceLabel(row.status) }}
+                </span>
+              </td>
             </tr>
           </tbody>
         </table>
