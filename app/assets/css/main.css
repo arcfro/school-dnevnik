@@ -312,6 +312,36 @@ button:disabled {
   min-width: 14rem;
 }
 
+.journal-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: end;
+}
+
+.journal-toolbar .btn {
+  flex: 0 0 auto;
+}
+
+.journal-grade {
+  width: 4.5rem;
+  min-height: var(--touch-min);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-card);
+  color: var(--color-foreground);
+  font: inherit;
+}
+
+.journal-status {
+  min-width: 8rem;
+}
+
+.grade-value {
+  font-weight: 700;
+}
+
 .toast-region {
   position: fixed;
   right: var(--space-xl);
