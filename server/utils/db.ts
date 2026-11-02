@@ -2,7 +2,9 @@ import Database from 'better-sqlite3'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import * as schema from '../db/schema'
 
-let _db: ReturnType<typeof drizzle<typeof schema>> | null = null
+export type AppDb = ReturnType<typeof drizzle<typeof schema>>
+
+let _db: AppDb | null = null
 
 export function useDb() {
   if (!_db) {
@@ -13,4 +15,8 @@ export function useDb() {
     _db = drizzle(sqlite, { schema })
   }
   return _db
+}
+
+export function setDbForTests(db: AppDb | null) {
+  _db = db
 }
