@@ -12,6 +12,7 @@ import {
 } from '../db/schema'
 import { useDb } from '../utils/db'
 import { assertRole, ConflictError, ForbiddenError } from '../utils/rbac'
+import { notifyParentsOfGrade } from './notifications.service'
 import type { SessionUser } from './users.service'
 
 const idSchema = z.uuid('Некорректный id')
@@ -198,7 +199,16 @@ export async function saveGrades(user: SessionUser, input: unknown) {
       })
       .returning()
     const created = rows[0]
-    if (created) saved.push(created)
+    if (created) {
+      saved.push(created)
+      await notifyParentsOfGrade({
+        studentId: created.studentId,
+        subjectId: created.subjectId,
+        value: created.value,
+        date: created.date,
+        gradeId: created.id,
+      })
+    }
   }
   return saved
 }

@@ -11,6 +11,7 @@ import {
 } from '../db/schema'
 import { useDb } from '../utils/db'
 import { assertRole, ForbiddenError } from '../utils/rbac'
+import { notifyParentsOfHomework } from './notifications.service'
 import type { SessionUser } from './users.service'
 
 const idSchema = z.uuid('Некорректный id')
@@ -177,13 +178,21 @@ export async function createHomework(user: SessionUser, input: unknown) {
     })
     .returning()
   const created = rows[0]!
+  const dueAt = formatDueAt(created.dueAt)
+  await notifyParentsOfHomework({
+    classId: created.classId,
+    subjectId: created.subjectId,
+    homeworkId: created.id,
+    title: created.title,
+    dueAt,
+  })
   return {
     id: created.id,
     classId: created.classId,
     subjectId: created.subjectId,
     title: created.title,
     body: created.body,
-    dueAt: formatDueAt(created.dueAt),
+    dueAt,
     createdBy: created.createdBy,
   }
 }

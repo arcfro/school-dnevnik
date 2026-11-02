@@ -2,6 +2,7 @@ export type RoleNavLink = {
   to: string
   label: string
   exact?: boolean
+  badge?: number
 }
 
 export const adminNav: RoleNavLink[] = [

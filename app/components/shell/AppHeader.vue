@@ -44,6 +44,7 @@ async function onLogout() {
         :aria-current="isActive(link) ? 'page' : undefined"
       >
         {{ link.label }}
+        <span v-if="link.badge" class="nav-badge">{{ link.badge }}</span>
       </NuxtLink>
     </nav>
     <div v-if="user" class="session">
@@ -112,6 +113,22 @@ async function onLogout() {
   color: var(--color-primary);
   background: var(--color-muted);
   box-shadow: inset 0 -2px 0 var(--color-primary);
+}
+
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  margin-left: var(--space-sm);
+  padding: 0 var(--space-sm);
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1;
 }
 
 .session {
