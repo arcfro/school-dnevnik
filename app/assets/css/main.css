@@ -225,7 +225,8 @@ button:disabled {
   text-decoration: underline;
 }
 
-.field select {
+.field select,
+.field textarea {
   min-height: var(--touch-min);
   padding: var(--space-md) var(--space-lg);
   border: 1px solid var(--color-border);
@@ -233,6 +234,41 @@ button:disabled {
   background: var(--color-card);
   color: var(--color-foreground);
   font: inherit;
+}
+
+.field textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.homework-form {
+  display: grid;
+  gap: var(--space-xl);
+  max-width: 40rem;
+}
+
+.homework-body {
+  margin: var(--space-sm) 0 0;
+  white-space: pre-wrap;
+  font-weight: 400;
+  color: var(--color-muted-foreground);
+}
+
+.homework-list {
+  gap: var(--space-lg);
+}
+
+.homework-card {
+  display: grid;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-muted);
+}
+
+.homework-card h2 {
+  font-size: var(--text-lg);
 }
 
 .btn-danger {
